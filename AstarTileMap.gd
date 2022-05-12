@@ -71,13 +71,17 @@ func get_astar_path_avoiding_obstacles(start_position, end_position, max_distanc
 	set_obstacles_points_disabled(true)
 	var potential_path_points = astar.get_point_path(get_point(start_position), get_point(end_position))
 	set_obstacles_points_disabled(false)
+	var astar_path = stop_path_at_unit(potential_path_points)
+	if max_distance >= 0: astar_path = set_path_length(astar_path, max_distance)
+	return astar_path
+
+func stop_path_at_unit(potential_path_points):
 	var astar_path = []
 	for i in potential_path_points.size():
 		var point = potential_path_points[i]
 		astar_path.append(point)
 		if i == 0: continue
 		if position_has_unit(point): break
-	if max_distance >= 0: astar_path = set_path_length(astar_path, max_distance)
 	return astar_path
 
 func get_astar_path(start_position, end_position, max_distance = -1):
