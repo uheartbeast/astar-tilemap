@@ -64,16 +64,14 @@ func get_astar_path_avoiding_obstacles_and_units(start_position, end_position, e
 	var astar_path = astar.get_point_path(get_point(start_position), get_point(end_position))
 	set_obstacles_points_disabled(false)
 	set_unit_points_disabled(false)
-	if max_distance >= 0: astar_path = set_path_length(astar_path, max_distance)
-	return astar_path
+	return set_path_length(astar_path, max_distance)
 
 func get_astar_path_avoiding_obstacles(start_position, end_position, max_distance = -1):
 	set_obstacles_points_disabled(true)
 	var potential_path_points = astar.get_point_path(get_point(start_position), get_point(end_position))
 	set_obstacles_points_disabled(false)
 	var astar_path = stop_path_at_unit(potential_path_points)
-	if max_distance >= 0: astar_path = set_path_length(astar_path, max_distance)
-	return astar_path
+	return set_path_length(astar_path, max_distance)
 
 func stop_path_at_unit(potential_path_points):
 	var astar_path = []
@@ -86,17 +84,12 @@ func stop_path_at_unit(potential_path_points):
 
 func get_astar_path(start_position, end_position, max_distance = -1):
 	var astar_path = astar.get_point_path(get_point(start_position), get_point(end_position))
-	if max_distance != -1: astar_path = set_path_length(astar_path, max_distance)
-	return astar_path
+	return set_path_length(astar_path, max_distance)
 
 func set_path_length(point_path, max_distance):
-	if point_path.empty(): return point_path
-	point_path.resize(point_path.size()-1)
-	var shortened_path = []
-	for i in max_distance+1:
-		if i > point_path.size()-1: break
-		shortened_path.append(point_path[i])
-	return shortened_path
+	if max_distance < 0: return point_path
+	point_path.resize(min(point_path.size(), max_distance))
+	return point_path
 
 func set_obstacles_points_disabled(value: bool):
 	for obstacle in obstacles:
