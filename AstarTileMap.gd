@@ -6,7 +6,6 @@ const DIRECTIONS = [Vector2.RIGHT, Vector2.UP, Vector2.LEFT, Vector2.DOWN]
 var astar = AStar2D.new()
 var obstacles = []
 var units = []
-var point_key = 32
 
 func _ready():
 	update()
@@ -22,7 +21,6 @@ func update():
 
 func create_pathfinding_points():
 	astar.clear()
-	point_key = get_used_rect().end.x
 	var used_cell_positions = get_used_cell_global_positions()
 	for cell_position in used_cell_positions:
 		astar.add_point(get_point(cell_position), cell_position)
@@ -153,8 +151,10 @@ func get_floodfill_positions(start_position, min_range, max_range, skip_obstacle
 	return floodfill_positions
 
 func get_point(point_position):
-	var point_cell = point_position/cell_size
-	return int(point_cell.x + point_cell.y * point_key)
+	# Cantor pairing function
+	var a := int(point_position.x)
+	var b := int(point_position.y)
+	return (a + b) * (a + b + 1) / 2 + b
 
 func has_point(point_position):
 	var point_id = get_point(point_position)
