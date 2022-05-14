@@ -1,12 +1,7 @@
 extends Control
 
-var astar
-var board setget set_board
-
-func set_board(value):
-	board = value
-	if board is AstarTileMap:
-		astar = board.astar
+export(NodePath) onready var board = get_node(board)
+onready var astar = board.astar if board else null
 
 func _physics_process(delta):
 	update()
