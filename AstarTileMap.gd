@@ -164,7 +164,7 @@ func get_used_cell_global_positions():
 	var cells = get_used_cells()
 	var cell_positions = []
 	for cell in cells:
-		var cell_position = global_position + cell*cell_size
+		var cell_position = global_position + map_to_world(cell)
 		cell_positions.append(cell_position)
 	return cell_positions
 
