@@ -129,7 +129,7 @@ func get_floodfill_positions(start_position, min_range, max_range, skip_obstacle
 		floodfill_positions.append(current_position)
 		
 		for direction in DIRECTIONS:
-			var new_position = current_position + direction * cell_size
+			var new_position = current_position + map_to_world(direction)
 			if skip_obstacles and position_has_obstacle(new_position): continue
 			if skip_units and position_has_unit(new_position): continue
 			if new_position in floodfill_positions: continue
@@ -171,9 +171,10 @@ func get_used_cell_global_positions():
 func connect_cardinals(point_position):
 	var center = get_point(point_position)
 	for direction in DIRECTIONS:
-		var cardinal_point = get_point(point_position+direction*cell_size)
+		var cardinal_point = get_point(point_position + map_to_world(direction))
 		if cardinal_point != center and astar.has_point(cardinal_point):
 			astar.connect_points(center, cardinal_point, true)
 
 func get_grid_distance(distance):
-	return int(abs(distance.x/cell_size.x) + abs(distance.y/cell_size.y))
+	var vec = world_to_map(distance).abs().floor()
+	return vec.x + vec.y
