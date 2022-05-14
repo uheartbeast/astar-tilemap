@@ -152,6 +152,13 @@ func get_floodfill_positions(start_position, min_range, max_range, skip_obstacle
 	
 	return floodfill_positions
 
+func path_directions(path):
+	# Convert a path into directional vectors whose sum would be path[length-1]
+	var directions = []
+	for p in range(1, path.size()):
+		directions.append(path[p] - path[p - 1])
+	return directions
+
 func get_point(point_position):
 	var point_cell = point_position/cell_size
 	return int(point_cell.x + point_cell.y * point_key)
