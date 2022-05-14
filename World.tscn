@@ -75,6 +75,7 @@ position = Vector2( 320, 256 )
 margin_right = 64.0
 margin_bottom = 64.0
 script = ExtResource( 6 )
+board = NodePath("../Board")
 
 [node name="Line" type="Line2D" parent="."]
 width = 8.0

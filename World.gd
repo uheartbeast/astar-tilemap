@@ -5,9 +5,6 @@ onready var astarDebug = $AstarDebug
 onready var player = $Board/Player
 onready var line = $Line
 
-func _ready():
-	astarDebug.board = board
-
 func _input(event):
 	if event.is_action_pressed("mouse_left"):
 		var target_cell = (event.position / board.cell_size).floor() * board.cell_size
