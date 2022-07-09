@@ -177,3 +177,92 @@ func connect_cardinals(point_position):
 func get_grid_distance(distance):
 	var vec = world_to_map(distance).abs().floor()
 	return vec.x + vec.y
+
+# Used internally to replace recursion
+class TarjanStack:
+	var it: Array
+	var inside: bool
+	var v: int
+	var w: int
+
+	func _init(it: Array, inside: bool, v: int, w: int):
+		self.it = it
+		self.inside = inside
+		self.v = v
+		self.w = w
+
+class TarjanContext:
+	var g: Dictionary  # the graph
+	var S := []        # The main stack of the alg.
+	var S_set := {}    # set(S) for performance
+	var index := {}    # { v : <index of v> }
+	var lowlink := {}  # { v : <lowlink of v> }
+	var T := []        # stack to replace recursion
+	var ret := []      # return value
+
+	func _init(g: Dictionary):
+		self.g = g
+
+func _tarjan_head(ctx: TarjanContext, v: int):
+		ctx.index[v] = len(ctx.index)
+		ctx.lowlink[v] = ctx.index[v]
+		ctx.S.append(v)
+		ctx.S_set[v] = true
+		var it = ctx.g.get(v, [])
+		ctx.T.append(TarjanStack.new(it, false, v, -1))
+
+func _tarjan_body(ctx: TarjanContext, it: Array, v: int):
+	for w in it:
+		if not ctx.index.has(w):
+			ctx.T.append(TarjanStack.new(it, true, v, w))
+			_tarjan_head(ctx, w)
+			return
+
+		if w in ctx.S_set:
+			ctx.lowlink[v] = min(ctx.lowlink[v], ctx.index[w])
+
+	if ctx.lowlink[v] == ctx.index[v]:
+		var scc := []
+		var w = null
+		while v != w:
+			w = ctx.S.back()
+			ctx.S.pop_back()
+			scc.append(w)
+			ctx.S_set.erase(w)
+		ctx.ret.append(scc)
+
+func _tarjan(g: Dictionary) -> Array:
+	var ctx := TarjanContext.new(g)
+
+	for v in g:
+		if not ctx.index.has(v):
+			_tarjan_head(ctx, v)
+
+		while not ctx.T.empty():
+			var it : Array = ctx.T.back().it
+			var inside : bool = ctx.T.back().inside
+			v = ctx.T.back().v
+			var w : int = ctx.T.back().w
+			ctx.T.pop_back()
+			if inside:
+				ctx.lowlink[v] = min(ctx.lowlink[w],
+									ctx.lowlink[v])
+			_tarjan_body(ctx, it, v)
+
+	return ctx.ret
+
+# returns the points as disjoint groups
+# any point in the same group can reach any other point in that group
+func get_connected_points(skip_obstacles := true) -> Array:
+	var g := {}
+	set_obstacles_points_disabled(skip_obstacles)
+	for point in astar.get_points():
+		if astar.is_point_disabled(point):
+			continue
+		var vertices := Array()
+		for vertex in astar.get_point_connections(point):
+			if not astar.is_point_disabled(vertex):
+				vertices.push_back(vertex)
+		g[point] = vertices
+	set_obstacles_points_disabled(false)
+	return _tarjan(g)
