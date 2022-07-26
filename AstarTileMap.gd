@@ -2,6 +2,7 @@ extends TileMap
 class_name AstarTileMap
 
 const DIRECTIONS := [Vector2.RIGHT, Vector2.UP, Vector2.LEFT, Vector2.DOWN]
+const CANTOR_LIMIT = int(pow(2, 31))
 
 var astar := AStar2D.new()
 var obstacles := []
@@ -149,11 +150,16 @@ func path_directions(path) -> Array:
 		directions.append(path[p] - path[p - 1])
 	return directions
 
+func to_natural(num: int) -> int:
+	if num < 0:
+		return CANTOR_LIMIT + num
+	return num
+
 func get_point(point_position: Vector2) -> int:
 	# Cantor pairing function
-	var a := int(point_position.x)
-	var b := int(point_position.y)
-	return (a + b) * (a + b + 1) / 2 + b
+	var a := to_natural(point_position.x)
+	var b := to_natural(point_position.y)
+	return (a + b + 1) / 2 * (a + b) + b
 
 func has_point(point_position: Vector2) -> bool:
 	var point_id := get_point(point_position)
