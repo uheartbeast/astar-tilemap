@@ -45,13 +45,13 @@ func add_unit(unit: Object) -> void:
 func remove_unit(unit: Object) -> void:
 	units.erase(unit)
 
-func position_has_obstacle(obstacle_position: Vector2, ignore_obstacle_position := null) -> bool:
+func position_has_obstacle(obstacle_position: Vector2, ignore_obstacle_position = null) -> bool:
 	if obstacle_position == ignore_obstacle_position: return false
 	for obstacle in obstacles:
 		if obstacle.global_position == obstacle_position: return true
 	return false
 
-func position_has_unit(unit_position: Vector2, ignore_unit_position := null) -> bool:
+func position_has_unit(unit_position: Vector2, ignore_unit_position = null) -> bool:
 	if unit_position == ignore_unit_position: return false
 	for unit in units:
 		if unit.global_position == unit_position: return true
