@@ -3,6 +3,15 @@ class_name AstarTileMap
 
 const DIRECTIONS := [Vector2.RIGHT, Vector2.UP, Vector2.LEFT, Vector2.DOWN]
 const PAIRING_LIMIT = int(pow(2, 30))
+enum pairing_methods {
+	CANTOR_UNSIGNED,	# positive values only
+	CANTOR_SIGNED,		# both positive and negative values	
+	SZUDZIK_UNSIGNED,	# more efficient than cantor
+	SZUDZIK_SIGNED,		# both positive and negative values
+	SZUDZIK_IMPROVED,	# improved version (best option)
+}
+
+export(pairing_methods) var current_pairing_method = pairing_methods.SZUDZIK_IMPROVED
 
 var astar := AStar2D.new()
 var obstacles := []
@@ -150,19 +159,71 @@ func path_directions(path) -> Array:
 		directions.append(path[p] - path[p - 1])
 	return directions
 
-func to_natural(num: int) -> int:
-	if num < 0:
-		return PAIRING_LIMIT + num
-	return num
-
 func get_point(point_position: Vector2) -> int:
-	# szudzik pairing function
-	var a := to_natural(point_position.x)
-	var b := to_natural(point_position.y)
+	var a := int(point_position.x)
+	var b := int(point_position.y)
+	match current_pairing_method:
+		pairing_methods.CANTOR_UNSIGNED:
+			assert(a >= 0 and b >= 0, "Board: pairing method has failed. Choose method that supports negative values.")
+			return cantor_pair(a, b)
+		pairing_methods.SZUDZIK_UNSIGNED:
+			assert(a >= 0 and b >= 0, "Board: pairing method has failed. Choose method that supports negative values.")			
+			return szudzik_pair(a, b)
+		pairing_methods.CANTOR_SIGNED:
+			return cantor_pair_signed(a, b)	
+		pairing_methods.SZUDZIK_SIGNED:
+			return szudzik_pair_signed(a, b)
+		pairing_methods.SZUDZIK_IMPROVED:
+			return szudzik_pair_improved(a, b)
+	return szudzik_pair_improved(a, b)
+
+func cantor_pair(a:int, b:int) -> int:
+	var result := 0.5 * (a + b) * (a + b + 1) + b
+	return int(result)
+
+func cantor_pair_signed(a:int, b:int) -> int:
+	if a >= 0:
+		a = a * 2
+	else:
+		a = (a * -2) - 1
+	if b >= 0:
+		b = b * 2
+	else:
+		b = (b * -2) - 1
+	return cantor_pair(a, b)
+
+func szudzik_pair(a:int ,b:int) -> int:
 	if a >= b: 
 		return (a * a) + a + b
 	else: 
-		return (b * b) + a
+		return (b * b) + a	
+
+func szudzik_pair_signed(a: int, b: int) -> int:
+	if a >= 0: 
+		a = a * 2
+	else: 
+		a = (a * -2) - 1
+	if b >= 0:
+		b = b * 2
+	else: 
+		b = (b * -2) - 1
+	return int((szudzik_pair(a, b) * 0.5))
+
+func szudzik_pair_improved(x:int, y:int) -> int:
+	var a: int
+	var b: int
+	if x >= 0:
+		a = x * 2
+	else: 
+		a = (x * -2) - 1
+	if y >= 0: 
+		b = y * 2
+	else: 
+		b = (y * -2) - 1	
+	var c = szudzik_pair(a,b) * 0.5
+	if a >= 0 and b < 0 or b >= 0 and a < 0:
+		return -c - 1
+	return c
 
 func has_point(point_position: Vector2) -> bool:
 	var point_id := get_point(point_position)
