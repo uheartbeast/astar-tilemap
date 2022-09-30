@@ -4,6 +4,8 @@ class_name AstarTileMap
 const DIRECTIONS := [Vector2.RIGHT, Vector2.UP, Vector2.LEFT, Vector2.DOWN]
 const PAIRING_LIMIT = int(pow(2, 30))
 
+export var diagonals := false
+
 var astar := AStar2D.new()
 var obstacles := []
 var units := []
@@ -178,7 +180,13 @@ func get_used_cell_global_positions() -> Array:
 
 func connect_cardinals(point_position) -> void:
 	var center := get_point(point_position)
-	for direction in DIRECTIONS:
+	var directions := DIRECTIONS
+	
+	if diagonals: 
+		var diagonals_array := [Vector2(1,1), Vector2(1,-1)]	# Only two needed for generation
+		directions += diagonals_array
+	
+	for direction in directions:
 		var cardinal_point := get_point(point_position + map_to_world(direction))
 		if cardinal_point != center and astar.has_point(cardinal_point):
 			astar.connect_points(center, cardinal_point, true)
