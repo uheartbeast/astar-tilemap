@@ -192,7 +192,7 @@ func cantor_pair_signed(a:int, b:int) -> int:
 		b = (b * -2) - 1
 	return cantor_pair(a, b)
 
-func szudzik_pair(a:int ,b:int) -> int:
+func szudzik_pair(a:int, b:int) -> int:
 	if a >= b: 
 		return (a * a) + a + b
 	else: 
