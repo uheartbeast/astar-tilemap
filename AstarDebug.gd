@@ -3,8 +3,6 @@ extends Control
 export(NodePath) onready var board = get_node(board)
 onready var astar = board.astar if board else null
 
-func _physics_process(delta):
-	update()
 
 func position_has_obstacle(obstacle_position):
 	return board.position_has_obstacle(obstacle_position) or board.position_has_unit(obstacle_position)

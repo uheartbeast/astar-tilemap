@@ -41,7 +41,8 @@ func create_pathfinding_points() -> void:
 func add_obstacle(obstacle: Object) -> void:
 	obstacles.append(obstacle)
 	if not obstacle.is_connected("tree_exiting", self, "remove_obstacle"):
-		obstacle.connect("tree_exiting", self, "remove_obstacle", [obstacle])
+		var _error := obstacle.connect("tree_exiting", self, "remove_obstacle", [obstacle])
+		if _error != 0: push_error(str(obstacle) + ": failed connect() function")
 
 func remove_obstacle(obstacle: Object) -> void:
 	obstacles.erase(obstacle)
@@ -49,7 +50,8 @@ func remove_obstacle(obstacle: Object) -> void:
 func add_unit(unit: Object) -> void:
 	units.append(unit)
 	if not unit.is_connected("tree_exiting", self, "remove_unit"):
-		unit.connect("tree_exiting", self, "remove_unit", [unit])
+		var _error := unit.connect("tree_exiting", self, "remove_unit", [unit])
+		if _error != 0: push_error(str(unit) + ": failed connect() function")
 
 func remove_unit(unit: Object) -> void:
 	units.erase(unit)
@@ -95,7 +97,8 @@ func get_astar_path(start_position: Vector2, end_position: Vector2, max_distance
 
 func set_path_length(point_path: Array, max_distance: int) -> Array:
 	if max_distance < 0: return point_path
-	point_path.resize(min(point_path.size(), max_distance))
+	var new_size := int(min(point_path.size(), max_distance))
+	point_path.resize(new_size)
 	return point_path
 
 func set_obstacles_points_disabled(value: bool) -> void:
