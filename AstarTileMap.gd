@@ -207,7 +207,7 @@ func szudzik_pair_signed(a: int, b: int) -> int:
 		b = b * 2
 	else: 
 		b = (b * -2) - 1
-	return int((szudzik_pair(a, b) * 0.5))
+	return int(szudzik_pair(a, b))
 
 func szudzik_pair_improved(x:int, y:int) -> int:
 	var a: int
@@ -220,7 +220,7 @@ func szudzik_pair_improved(x:int, y:int) -> int:
 		b = y * 2
 	else: 
 		b = (y * -2) - 1	
-	var c = szudzik_pair(a,b) * 0.5
+	var c = szudzik_pair(a,b)
 	if a >= 0 and b < 0 or b >= 0 and a < 0:
 		return -c - 1
 	return c
