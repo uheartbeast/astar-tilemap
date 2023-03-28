@@ -80,10 +80,9 @@ func get_astar_path_avoiding_obstacles_and_units(start_position: Vector2, end_po
 
 func get_astar_path_avoiding_obstacles(start_position: Vector2, end_position: Vector2, max_distance := -1) -> Array:
 	set_obstacles_points_disabled(true)
-	var potential_path_points := astar.get_point_path(get_point(start_position), get_point(end_position))
+	var path_points := astar.get_point_path(get_point(start_position), get_point(end_position))
 	set_obstacles_points_disabled(false)
-	var astar_path := stop_path_at_unit(potential_path_points)
-	return set_path_length(astar_path, max_distance)
+	return set_path_length(path_points, max_distance)
 
 func stop_path_at_unit(potential_path_points: Array) -> Array:
 	for i in range(1, potential_path_points.size()):
