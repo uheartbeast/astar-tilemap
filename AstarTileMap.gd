@@ -9,11 +9,15 @@ enum pairing_methods {
 	SZUDZIK_UNSIGNED,	# more efficient than cantor
 	SZUDZIK_SIGNED,		# both positive and negative values
 	SZUDZIK_IMPROVED,	# improved version (best option)
+	SHIFTY_PAIR # For debugging; x and y are seeable by human. Ish.
 }
 
-export(pairing_methods) var current_pairing_method = pairing_methods.SZUDZIK_IMPROVED
+@export var current_pairing_method : pairing_methods = pairing_methods.SZUDZIK_IMPROVED
 
-export var diagonals := false
+@export var diagonals := false
+
+# The tile map layer to base the navigation on.
+var read_layer = 0
 
 var astar := AStar2D.new()
 var obstacles := []
@@ -40,19 +44,19 @@ func create_pathfinding_points() -> void:
 	for cell_position in used_cell_positions:
 		connect_cardinals(cell_position)
 
-func add_obstacle(obstacle: Object) -> void:
+func add_obstacle(obstacle: Node) -> void:
 	obstacles.append(obstacle)
-	if not obstacle.is_connected("tree_exiting", self, "remove_obstacle"):
-		var _error := obstacle.connect("tree_exiting", self, "remove_obstacle", [obstacle])
+	if not obstacle.tree_exiting.is_connected(self.remove_obstacle):
+		var _error := obstacle.tree_exiting.connect( self.remove_obstacle.bind( obstacle ) )
 		if _error != 0: push_error(str(obstacle) + ": failed connect() function")
 
 func remove_obstacle(obstacle: Object) -> void:
 	obstacles.erase(obstacle)
 
-func add_unit(unit: Object) -> void:
+func add_unit(unit: Node) -> void:
 	units.append(unit)
-	if not unit.is_connected("tree_exiting", self, "remove_unit"):
-		var _error := unit.connect("tree_exiting", self, "remove_unit", [unit])
+	if not unit.tree_exiting.is_connected(self.remove_unit):
+		var _error := unit.tree_exiting.connect(self.remove_unit.bind(unit))
 		if _error != 0: push_error(str(unit) + ": failed connect() function")
 
 func remove_unit(unit: Object) -> void:
@@ -116,7 +120,7 @@ func get_floodfill_positions(start_position: Vector2, min_range: int, max_range:
 	var floodfill_positions := []
 	var checking_positions := [start_position]
 
-	while not checking_positions.empty():
+	while not checking_positions.is_empty():
 		var current_position : Vector2 = checking_positions.pop_back()
 		if skip_obstacles and position_has_obstacle(current_position, start_position): continue
 		if skip_units and position_has_unit(current_position, start_position): continue
@@ -133,7 +137,7 @@ func get_floodfill_positions(start_position: Vector2, min_range: int, max_range:
 		floodfill_positions.append(current_position)
 
 		for direction in DIRECTIONS:
-			var new_position := current_position + map_to_world(direction)
+			var new_position := current_position + self.global_position + self.map_to_local(direction)
 			if skip_obstacles and position_has_obstacle(new_position): continue
 			if skip_units and position_has_unit(new_position): continue
 			if new_position in floodfill_positions: continue
@@ -164,8 +168,8 @@ func path_directions(path) -> Array:
 	return directions
 
 func get_point(point_position: Vector2) -> int:
-	var a := int(point_position.x)
-	var b := int(point_position.y)
+	var a := int(point_position.x / self.tile_set.tile_size.x)
+	var b := int(point_position.y / self.tile_set.tile_size.y)
 	match current_pairing_method:
 		pairing_methods.CANTOR_UNSIGNED:
 			assert(a >= 0 and b >= 0, "Board: pairing method has failed. Choose method that supports negative values.")
@@ -179,6 +183,8 @@ func get_point(point_position: Vector2) -> int:
 			return szudzik_pair_signed(a, b)
 		pairing_methods.SZUDZIK_IMPROVED:
 			return szudzik_pair_improved(a, b)
+		pairing_methods.SHIFTY_PAIR:
+			return shifty_pair(a, b)
 	return szudzik_pair_improved(a, b)
 
 func cantor_pair(a:int, b:int) -> int:
@@ -229,15 +235,19 @@ func szudzik_pair_improved(x:int, y:int) -> int:
 		return -c - 1
 	return c
 
+func shifty_pair( x: int, y: int) -> int:
+	# Assume they are less than 1000, combine by shifting.
+	return x * 1000 + y
+
 func has_point(point_position: Vector2) -> bool:
 	var point_id := get_point(point_position)
 	return astar.has_point(point_id)
 
 func get_used_cell_global_positions() -> Array:
-	var cells = get_used_cells()
+	var cells = get_used_cells( self.read_layer )
 	var cell_positions := []
 	for cell in cells:
-		var cell_position := global_position + map_to_world(cell)
+		var cell_position := global_position + map_to_local(cell)
 		cell_positions.append(cell_position)
 	return cell_positions
 
@@ -250,10 +260,10 @@ func connect_cardinals(point_position) -> void:
 		directions += diagonals_array
 	
 	for direction in directions:
-		var cardinal_point := get_point(point_position + map_to_world(direction))
+		var cardinal_point := get_point(point_position + direction * tile_set.tile_size.x  )
 		if cardinal_point != center and astar.has_point(cardinal_point):
 			astar.connect_points(center, cardinal_point, true)
 
 func get_grid_distance(distance: Vector2) -> float:
-	var vec := world_to_map(distance).abs().floor()
+	var vec := local_to_map(distance).abs()
 	return vec.x + vec.y
