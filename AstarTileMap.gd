@@ -260,7 +260,7 @@ func connect_cardinals(point_position) -> void:
 		directions += diagonals_array
 	
 	for direction in directions:
-		var cardinal_point := get_point(point_position + map_to_local(direction))
+		var cardinal_point := get_point(point_position + direction * tile_set.tile_size.x  )
 		if cardinal_point != center and astar.has_point(cardinal_point):
 			astar.connect_points(center, cardinal_point, true)
 
