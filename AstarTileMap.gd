@@ -9,6 +9,7 @@ enum pairing_methods {
 	SZUDZIK_UNSIGNED,	# more efficient than cantor
 	SZUDZIK_SIGNED,		# both positive and negative values
 	SZUDZIK_IMPROVED,	# improved version (best option)
+	SHIFTY_PAIR # For debugging; x and y are seeable by human. Ish.
 }
 
 @export var current_pairing_method : pairing_methods = pairing_methods.SZUDZIK_IMPROVED
@@ -136,7 +137,7 @@ func get_floodfill_positions(start_position: Vector2, min_range: int, max_range:
 		floodfill_positions.append(current_position)
 
 		for direction in DIRECTIONS:
-			var new_position := current_position + self.map_to_local(direction)
+			var new_position := current_position + self.global_position + self.map_to_local(direction)
 			if skip_obstacles and position_has_obstacle(new_position): continue
 			if skip_units and position_has_unit(new_position): continue
 			if new_position in floodfill_positions: continue
@@ -167,8 +168,8 @@ func path_directions(path) -> Array:
 	return directions
 
 func get_point(point_position: Vector2) -> int:
-	var a := int(point_position.x)
-	var b := int(point_position.y)
+	var a := int(point_position.x / self.tile_set.tile_size.x)
+	var b := int(point_position.y / self.tile_set.tile_size.y)
 	match current_pairing_method:
 		pairing_methods.CANTOR_UNSIGNED:
 			assert(a >= 0 and b >= 0, "Board: pairing method has failed. Choose method that supports negative values.")
@@ -182,6 +183,8 @@ func get_point(point_position: Vector2) -> int:
 			return szudzik_pair_signed(a, b)
 		pairing_methods.SZUDZIK_IMPROVED:
 			return szudzik_pair_improved(a, b)
+		pairing_methods.SHIFTY_PAIR:
+			return shifty_pair(a, b)
 	return szudzik_pair_improved(a, b)
 
 func cantor_pair(a:int, b:int) -> int:
@@ -231,6 +234,10 @@ func szudzik_pair_improved(x:int, y:int) -> int:
 	if a >= 0 and b < 0 or b >= 0 and a < 0:
 		return -c - 1
 	return c
+
+func shifty_pair( x: int, y: int) -> int:
+	# Assume they are less than 1000, combine by shifting.
+	return x * 1000 + y
 
 func has_point(point_position: Vector2) -> bool:
 	var point_id := get_point(point_position)
