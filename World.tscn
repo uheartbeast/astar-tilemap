@@ -1,81 +1,93 @@
-[gd_scene load_steps=8 format=2]
+[gd_scene load_steps=9 format=3 uid="uid://cbhsef15v28rl"]
 
-[ext_resource path="res://D6.png" type="Texture" id=1]
-[ext_resource path="res://Wall.tscn" type="PackedScene" id=2]
-[ext_resource path="res://Player.tscn" type="PackedScene" id=3]
-[ext_resource path="res://World.gd" type="Script" id=4]
-[ext_resource path="res://AstarTileMap.gd" type="Script" id=5]
-[ext_resource path="res://AstarDebug.gd" type="Script" id=6]
+[ext_resource type="Texture2D" uid="uid://cjq5g36vd2eyd" path="res://D6.png" id="1"]
+[ext_resource type="PackedScene" path="res://Wall.tscn" id="2"]
+[ext_resource type="PackedScene" path="res://Player.tscn" id="3"]
+[ext_resource type="Script" path="res://World.gd" id="4"]
+[ext_resource type="Script" path="res://AstarTileMap.gd" id="5"]
+[ext_resource type="Script" path="res://AstarDebug.gd" id="6"]
 
-[sub_resource type="TileSet" id=1]
-0/name = "D6.png 0"
-0/texture = ExtResource( 1 )
-0/tex_offset = Vector2( 0, 0 )
-0/modulate = Color( 1, 1, 1, 1 )
-0/region = Rect2( 0, 0, 64, 64 )
-0/tile_mode = 0
-0/occluder_offset = Vector2( 0, 0 )
-0/navigation_offset = Vector2( 0, 0 )
-0/shape_offset = Vector2( 0, 0 )
-0/shape_transform = Transform2D( 1, 0, 0, 1, 0, 0 )
-0/shape_one_way = false
-0/shape_one_way_margin = 0.0
-0/shapes = [  ]
-0/z_index = 0
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_srde2"]
+texture = ExtResource("1")
+texture_region_size = Vector2i(64, 64)
+0:0/next_alternative_id = 8
+0:0/0 = 0
+0:0/1 = 1
+0:0/1/flip_h = true
+0:0/2 = 2
+0:0/2/flip_v = true
+0:0/3 = 3
+0:0/3/flip_h = true
+0:0/3/flip_v = true
+0:0/4 = 4
+0:0/4/transpose = true
+0:0/5 = 5
+0:0/5/flip_h = true
+0:0/5/transpose = true
+0:0/6 = 6
+0:0/6/flip_v = true
+0:0/6/transpose = true
+0:0/7 = 7
+0:0/7/flip_h = true
+0:0/7/flip_v = true
+0:0/7/transpose = true
+
+[sub_resource type="TileSet" id="1"]
+tile_size = Vector2i(64, 64)
+sources/0 = SubResource("TileSetAtlasSource_srde2")
 
 [node name="World" type="Node2D"]
-script = ExtResource( 4 )
+script = ExtResource("4")
 
 [node name="Board" type="TileMap" parent="."]
-tile_set = SubResource( 1 )
-format = 1
-tile_data = PoolIntArray( 65539, 0, 0, 65540, 0, 0, 65541, 0, 0, 65542, 0, 0, 65543, 0, 0, 65544, 0, 0, 65547, 0, 0, 65548, 0, 0, 65549, 0, 0, 131074, 0, 0, 131075, 0, 0, 131076, 0, 0, 131077, 0, 0, 131078, 0, 0, 131079, 0, 0, 131080, 0, 0, 131083, 0, 0, 131085, 0, 0, 131086, 0, 0, 196610, 0, 0, 196611, 0, 0, 196612, 0, 0, 196613, 0, 0, 196614, 0, 0, 196615, 0, 0, 196616, 0, 0, 196619, 0, 0, 196620, 0, 0, 196621, 0, 0, 196622, 0, 0, 262146, 0, 0, 262147, 0, 0, 262148, 0, 0, 262149, 0, 0, 262153, 0, 0, 262154, 0, 0, 262155, 0, 0, 262156, 0, 0, 262157, 0, 0, 327682, 0, 0, 327683, 0, 0, 327684, 0, 0, 327688, 0, 0, 327689, 0, 0, 327690, 0, 0, 327691, 0, 0, 327692, 0, 0, 327693, 0, 0, 393218, 0, 0, 393219, 0, 0, 393220, 0, 0, 393221, 0, 0, 393222, 0, 0, 393223, 0, 0, 393224, 0, 0, 393225, 0, 0, 393226, 0, 0, 393227, 0, 0, 393228, 0, 0, 393229, 0, 0, 458755, 0, 0, 458756, 0, 0, 458757, 0, 0, 458758, 0, 0, 458759, 0, 0, 458760, 0, 0, 458761, 0, 0, 458762, 0, 0, 458764, 0, 0, 458765, 0, 0, 458766, 0, 0, 524300, 0, 0, 524301, 0, 0, 524302, 0, 0 )
-script = ExtResource( 5 )
+tile_set = SubResource("1")
+format = 2
+layer_0/tile_data = PackedInt32Array(65539, 0, 0, 65540, 0, 0, 65541, 0, 0, 65542, 0, 0, 65543, 0, 0, 65544, 0, 0, 65547, 0, 0, 65548, 0, 0, 65549, 0, 0, 131074, 0, 0, 131075, 0, 0, 131076, 0, 0, 131077, 0, 0, 131078, 0, 0, 131079, 0, 0, 131080, 0, 0, 131083, 0, 0, 131085, 0, 0, 131086, 0, 0, 196610, 0, 0, 196611, 0, 0, 196612, 0, 0, 196613, 0, 0, 196614, 0, 0, 196615, 0, 0, 196616, 0, 0, 196619, 0, 0, 196620, 0, 0, 196621, 0, 0, 196622, 0, 0, 262146, 0, 0, 262147, 0, 0, 262148, 0, 0, 262149, 0, 0, 262153, 0, 0, 262154, 0, 0, 262155, 0, 0, 262156, 0, 0, 262157, 0, 0, 327682, 0, 0, 327683, 0, 0, 327684, 0, 0, 327688, 0, 0, 327689, 0, 0, 327690, 0, 0, 327691, 0, 0, 327692, 0, 0, 327693, 0, 0, 393218, 0, 0, 393219, 0, 0, 393220, 0, 0, 393221, 0, 0, 393222, 0, 0, 393223, 0, 0, 393224, 0, 0, 393225, 0, 0, 393226, 0, 0, 393227, 0, 0, 393228, 0, 0, 393229, 0, 0, 458755, 0, 0, 458756, 0, 0, 458757, 0, 0, 458758, 0, 0, 458759, 0, 0, 458760, 0, 0, 458761, 0, 0, 458762, 0, 0, 458764, 0, 0, 458765, 0, 0, 458766, 0, 0, 524300, 0, 0, 524301, 0, 0, 524302, 0, 0)
+script = ExtResource("5")
 
-[node name="Wall" parent="Board" instance=ExtResource( 2 )]
-position = Vector2( 256, 128 )
+[node name="Wall" parent="Board" instance=ExtResource("2")]
+position = Vector2(256, 128)
 
-[node name="Wall2" parent="Board" instance=ExtResource( 2 )]
-position = Vector2( 384, 128 )
+[node name="Wall2" parent="Board" instance=ExtResource("2")]
+position = Vector2(384, 128)
 
-[node name="Wall3" parent="Board" instance=ExtResource( 2 )]
-position = Vector2( 512, 192 )
+[node name="Wall3" parent="Board" instance=ExtResource("2")]
+position = Vector2(512, 192)
 
-[node name="Wall4" parent="Board" instance=ExtResource( 2 )]
-position = Vector2( 576, 384 )
+[node name="Wall4" parent="Board" instance=ExtResource("2")]
+position = Vector2(576, 384)
 
-[node name="Wall5" parent="Board" instance=ExtResource( 2 )]
-position = Vector2( 640, 384 )
+[node name="Wall5" parent="Board" instance=ExtResource("2")]
+position = Vector2(640, 384)
 
-[node name="Wall6" parent="Board" instance=ExtResource( 2 )]
-position = Vector2( 640, 320 )
+[node name="Wall6" parent="Board" instance=ExtResource("2")]
+position = Vector2(640, 320)
 
-[node name="Wall7" parent="Board" instance=ExtResource( 2 )]
-position = Vector2( 704, 320 )
+[node name="Wall7" parent="Board" instance=ExtResource("2")]
+position = Vector2(704, 320)
 
-[node name="Wall8" parent="Board" instance=ExtResource( 2 )]
-position = Vector2( 448, 448 )
+[node name="Wall8" parent="Board" instance=ExtResource("2")]
+position = Vector2(448, 448)
 
-[node name="Wall9" parent="Board" instance=ExtResource( 2 )]
-position = Vector2( 128, 320 )
+[node name="Wall9" parent="Board" instance=ExtResource("2")]
+position = Vector2(128, 320)
 
-[node name="Wall11" parent="Board" instance=ExtResource( 2 )]
-position = Vector2( 192, 320 )
+[node name="Wall11" parent="Board" instance=ExtResource("2")]
+position = Vector2(192, 320)
 
-[node name="Wall12" parent="Board" instance=ExtResource( 2 )]
-position = Vector2( 704, 128 )
+[node name="Wall12" parent="Board" instance=ExtResource("2")]
+position = Vector2(704, 128)
 
-[node name="Player" parent="Board" instance=ExtResource( 3 )]
-position = Vector2( 320, 256 )
+[node name="Player" parent="Board" instance=ExtResource("3")]
+position = Vector2(320, 256)
 
-[node name="Player2" parent="Board" instance=ExtResource( 3 )]
-position = Vector2( 320, 128 )
+[node name="Player2" parent="Board" instance=ExtResource("3")]
+position = Vector2(320, 128)
 
 [node name="AstarDebug" type="Control" parent="."]
-margin_right = 64.0
-margin_bottom = 64.0
-script = ExtResource( 6 )
-board = NodePath("../Board")
+layout_mode = 3
+anchors_preset = 0
+script = ExtResource("6")
 
 [node name="Line" type="Line2D" parent="."]
 width = 8.0
