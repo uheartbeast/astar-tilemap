@@ -1,7 +1,7 @@
 extends Control
 
 @export var board: AstarTileMap
-@onready var astar = board.astar if board else null
+@onready var astar: AStar2D = board.astar if board else null
 
 
 func position_has_obstacle(obstacle_position):
@@ -9,8 +9,8 @@ func position_has_obstacle(obstacle_position):
 
 func _draw():
 	if not astar is AStar2D: return
-	var offset = board.cell_size/2
-	for point in astar.get_points():
+	var offset = Vector2.ZERO # Vector2( board.tile_set.tile_size )/2
+	for point in astar.get_point_ids():
 		if astar.is_point_disabled(point): continue
 		var point_position = astar.get_point_position(point)
 		if position_has_obstacle(point_position): continue

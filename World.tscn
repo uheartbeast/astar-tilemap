@@ -84,10 +84,11 @@ position = Vector2(320, 256)
 [node name="Player2" parent="Board" instance=ExtResource("3")]
 position = Vector2(320, 128)
 
-[node name="AstarDebug" type="Control" parent="."]
+[node name="AstarDebug" type="Control" parent="." node_paths=PackedStringArray("board")]
 layout_mode = 3
 anchors_preset = 0
 script = ExtResource("6")
+board = NodePath("../Board")
 
 [node name="Line" type="Line2D" parent="."]
 width = 8.0
